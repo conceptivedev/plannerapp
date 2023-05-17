@@ -1,55 +1,43 @@
 package com.conceptive.planner.web.rest;
 
-import com.conceptive.planner.service.UserService;
-import com.conceptive.planner.service.dto.AdminUserDTO;
-import java.security.Principal;
+import com.conceptive.planner.security.SecurityUtils;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import java.util.Set;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * REST controller for managing the current user's account.
- */
 @RestController
 @RequestMapping("/api")
 public class AccountResource {
 
-    private static class AccountResourceException extends RuntimeException {
-
-        private static final long serialVersionUID = 1L;
-
-        private AccountResourceException(String message) {
-            super(message);
-        }
-    }
-
     private final Logger log = LoggerFactory.getLogger(AccountResource.class);
 
-    private final UserService userService;
-
-    public AccountResource(UserService userService) {
-        this.userService = userService;
-    }
+    private static class AccountResourceException extends RuntimeException {}
 
     /**
      * {@code GET  /account} : get the current user.
      *
-     * @param principal the current user; resolves to {@code null} if not authenticated.
      * @return the current user.
      * @throws AccountResourceException {@code 500 (Internal Server Error)} if the user couldn't be returned.
      */
     @GetMapping("/account")
-    @SuppressWarnings("unchecked")
-    public AdminUserDTO getAccount(Principal principal) {
-        if (principal instanceof AbstractAuthenticationToken) {
-            return userService.getUserFromAuthentication((AbstractAuthenticationToken) principal);
-        } else {
-            throw new AccountResourceException("User could not be found");
-        }
+    public UserVM getAccount() {
+        String login = SecurityUtils.getCurrentUserLogin().orElseThrow(AccountResourceException::new);
+        Set<String> authorities = SecurityContextHolder
+            .getContext()
+            .getAuthentication()
+            .getAuthorities()
+            .stream()
+            .map(GrantedAuthority::getAuthority)
+            .collect(Collectors.toSet());
+        return new UserVM(login, authorities);
     }
 
     /**
@@ -62,5 +50,29 @@ public class AccountResource {
     public String isAuthenticated(HttpServletRequest request) {
         log.debug("REST request to check if the current user is authenticated");
         return request.getRemoteUser();
+    }
+
+    private static class UserVM {
+
+        private String login;
+        private Set<String> authorities;
+
+        @JsonCreator
+        UserVM(String login, Set<String> authorities) {
+            this.login = login;
+            this.authorities = authorities;
+        }
+
+        public boolean isActivated() {
+            return true;
+        }
+
+        public Set<String> getAuthorities() {
+            return authorities;
+        }
+
+        public String getLogin() {
+            return login;
+        }
     }
 }

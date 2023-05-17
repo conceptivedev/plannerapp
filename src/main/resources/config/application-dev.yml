@@ -24,7 +24,7 @@ spring:
   devtools:
     restart:
       enabled: true
-      additional-exclude: static/**
+      additional-exclude: static/**,.h2.server.properties
     livereload:
       enabled: false # we use Webpack dev server + BrowserSync for livereload
   jackson:
@@ -32,14 +32,17 @@ spring:
       indent-output: true
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:postgresql://localhost:5432/plannerapp
-    username: plannerapp
+    url: jdbc:h2:file:./target/h2db/db/optaplanpoc;DB_CLOSE_DELAY=-1;MODE=LEGACY
+    username: optaplanpoc
     password:
     hikari:
       poolName: Hikari
       auto-commit: false
+  h2:
+    console:
+      # disable spring boot built-in h2-console since we start it manually with correct configuration
+      enabled: false
   jpa:
-    database-platform: tech.jhipster.domain.util.FixedPostgreSQL10Dialect
   liquibase:
     # Remove 'faker' if you do not want the sample data to be loaded automatically
     contexts: dev, faker
@@ -73,6 +76,14 @@ jhipster:
     exposed-headers: 'Authorization,Link,X-Total-Count,X-${jhipster.clientApp.name}-alert,X-${jhipster.clientApp.name}-error,X-${jhipster.clientApp.name}-params'
     allow-credentials: true
     max-age: 1800
+  security:
+    authentication:
+      jwt:
+        # This token must be encoded using Base64 and be at least 256 bits long (you can type `openssl rand -base64 64` on your command line to generate a 512 bits one)
+        base64-secret: YThkNzA1YWMwOTgxN2Y4MGU0ODhlZGM4YTY0MjIxN2IxYjYwZjllMDI0Njk5YzA4NzJiODgyYzMxZDMwNzUxOGI5NjU0NGZhODE1NTY0Y2Y4OTI4NmU2NDMyYTUyYTY5MzE2MDZkNmY0ODcxNjMxOTc3MTFmY2M4OTg2NjZhOGI=
+        # Token is valid 24 hours
+        token-validity-in-seconds: 86400
+        token-validity-in-seconds-for-remember-me: 2592000
   logging:
     use-json-format: false # By default, logs are not in Json format
     logstash: # Forward logs to logstash over a socket, used by LoggingConfiguration

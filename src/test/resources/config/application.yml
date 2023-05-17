@@ -15,7 +15,7 @@
 
 spring:
   application:
-    name: plannerapp
+    name: optaplanpoc
   # Replace by 'prod, faker' to add the faker context and have sample data loaded in production
   liquibase:
     contexts: test
@@ -31,26 +31,23 @@ spring:
       matching-strategy: ant_path_matcher
   messages:
     basename: i18n/messages
+  security:
+    user:
+      name: test
+      password: test
   task:
     execution:
-      thread-name-prefix: plannerapp-task-
+      thread-name-prefix: optaplanpoc-task-
       pool:
         core-size: 1
         max-size: 50
         queue-capacity: 10000
     scheduling:
-      thread-name-prefix: plannerapp-scheduling-
+      thread-name-prefix: optaplanpoc-scheduling-
       pool:
         size: 20
   thymeleaf:
     mode: HTML
-  # Allow SecurityConfiguration to initialize w/o specifying an empty issuer-uri is OK
-  security:
-    oauth2:
-      client:
-        provider:
-          oidc:
-            issuer-uri: http://DO_NOT_CALL:9080/realms/jhipster
 
 server:
   port: 10344
@@ -63,9 +60,9 @@ server:
 # ===================================================================
 jhipster:
   clientApp:
-    name: 'plannerappApp'
+    name: 'optaplanpocApp'
   mail:
-    from: plannerapp@localhost.com
+    from: optaplanpoc@localhost.com
     base-url: http://127.0.0.1:8080
   logging:
     # To test json console appender
@@ -75,6 +72,13 @@ jhipster:
       host: localhost
       port: 5000
       queue-size: 512
+  security:
+    authentication:
+      jwt:
+        # This token must be encoded using Base64 (you can type `echo 'secret-key'|base64` on your command line)
+        base64-secret: YThkNzA1YWMwOTgxN2Y4MGU0ODhlZGM4YTY0MjIxN2IxYjYwZjllMDI0Njk5YzA4NzJiODgyYzMxZDMwNzUxOGI5NjU0NGZhODE1NTY0Y2Y4OTI4NmU2NDMyYTUyYTY5MzE2MDZkNmY0ODcxNjMxOTc3MTFmY2M4OTg2NjZhOGI=
+        # Token is valid 24 hours
+        token-validity-in-seconds: 86400
 
 # ===================================================================
 # Application specific properties
