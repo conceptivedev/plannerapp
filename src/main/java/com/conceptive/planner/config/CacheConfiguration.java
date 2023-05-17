@@ -43,11 +43,18 @@ public class CacheConfiguration {
     @Bean
     public JCacheManagerCustomizer cacheManagerCustomizer() {
         return cm -> {
-            createCache(cm, com.conceptive.planner.repository.UserRepository.USERS_BY_LOGIN_CACHE);
-            createCache(cm, com.conceptive.planner.repository.UserRepository.USERS_BY_EMAIL_CACHE);
-            createCache(cm, com.conceptive.planner.domain.User.class.getName());
-            createCache(cm, com.conceptive.planner.domain.Authority.class.getName());
-            createCache(cm, com.conceptive.planner.domain.User.class.getName() + ".authorities");
+            createCache(cm, com.conceptive.planner.domain.Region.class.getName());
+            createCache(cm, com.conceptive.planner.domain.Country.class.getName());
+            createCache(cm, com.conceptive.planner.domain.Location.class.getName());
+            createCache(cm, com.conceptive.planner.domain.Department.class.getName());
+            createCache(cm, com.conceptive.planner.domain.Department.class.getName() + ".employees");
+            createCache(cm, com.conceptive.planner.domain.Task.class.getName());
+            createCache(cm, com.conceptive.planner.domain.Task.class.getName() + ".jobs");
+            createCache(cm, com.conceptive.planner.domain.Employee.class.getName());
+            createCache(cm, com.conceptive.planner.domain.Employee.class.getName() + ".jobs");
+            createCache(cm, com.conceptive.planner.domain.Job.class.getName());
+            createCache(cm, com.conceptive.planner.domain.Job.class.getName() + ".tasks");
+            createCache(cm, com.conceptive.planner.domain.JobHistory.class.getName());
             // jhipster-needle-ehcache-add-entry
         };
     }

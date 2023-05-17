@@ -1,9 +1,8 @@
 package com.conceptive.planner;
 
-import com.conceptive.planner.PlannerappApp;
+import com.conceptive.planner.OptaplanpocApp;
 import com.conceptive.planner.config.AsyncSyncConfiguration;
 import com.conceptive.planner.config.EmbeddedSQL;
-import com.conceptive.planner.config.TestSecurityConfiguration;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -16,7 +15,7 @@ import org.springframework.test.annotation.DirtiesContext;
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@SpringBootTest(classes = { PlannerappApp.class, AsyncSyncConfiguration.class, TestSecurityConfiguration.class })
+@SpringBootTest(classes = { OptaplanpocApp.class, AsyncSyncConfiguration.class })
 @EmbeddedSQL
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public @interface IntegrationTest {
